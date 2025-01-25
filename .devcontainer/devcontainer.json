@@ -1,0 +1,32 @@
+{
+    "name": "ESP Build Environment",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    "mounts": [
+        "source=extensionCache,target=/root/.vscode-server/extensions,type=volume"
+    ],
+    "workspaceMount": "source=${localWorkspaceFolder}/hello-world,target=/root/hello-world,type=bind",
+    /* the path of workspace folder, which means that this folder will be opened after container is running
+    */
+    "workspaceFolder": "/root/hello-world",
+    /* mount the VS Code extensions to the target path, and then they don't need to be installed again when rebuilding the container
+    */
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "espressif.esp-idf-extension"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "zsh",
+                "idf.espIdfPath": "$Environment:IDF_PATH",
+                "idf.toolsPath": "/root/.espressif/tools"
+            }
+        }
+    },
+    "runArgs": [
+        "--privileged",
+        "--device=/dev/usb"
+    ]
+}
