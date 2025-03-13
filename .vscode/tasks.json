@@ -15,11 +15,5 @@
             "command": "docker run --rm",
             "problemMatcher": []
         }
-        // {
-        //     "label": "docker-run",
-        //     "type": "shell",
-        //     "command": "docker run -it --rm -v ./hello-world:/usr/local/pico-sdk-app ci-rpi-pico",
-        //     "problemMatcher": []
-        // }
     ]
 }
