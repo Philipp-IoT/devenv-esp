@@ -1,0 +1,53 @@
+name: Build and deploy
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+env:
+  EXCLUDE_PREFIX: 'chore(release)'
+
+jobs:
+  build_docker_image:
+    name: Build Docker image and push to local registry
+    runs-on: alpine
+    steps:
+      - name: Docker meta
+        id: meta
+        uses: https://github.com/docker/metadata-action@v5
+        with:
+          images: |
+            localhost:5000/buildenv-esp
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - name: Build
+        uses: https://github.com/docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+  release:
+    name: Bump
+    runs-on: alpine
+    needs: build_docker_image
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets._GITEA_TOKEN }}
+    - name: Semantic Release
+      uses: https://github.com/cycjimmy/semantic-release-action@v4
+      env:
+        GITEA_TOKEN: ${{ secrets._GITEA_TOKEN }}
+      with:
+        extra_plugins: |
+          @semantic-release/git
+          @saithodev/semantic-release-gitea
+          @semantic-release/changelog

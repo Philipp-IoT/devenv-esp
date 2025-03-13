@@ -1,1 +1,5 @@
 hello-world/build/**
+hello-world/build/**
+node_modules/**
+package-lock.json
+package.json
