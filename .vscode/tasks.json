@@ -12,7 +12,7 @@
         {
             "label": "docker-run",
             "type": "shell",
-            "command": "docker run --rm",
+            "command": "docker run --rm buildenv-esp",
             "problemMatcher": []
         }
     ]
