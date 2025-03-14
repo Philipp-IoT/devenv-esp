@@ -12,7 +12,7 @@
         {
             "label": "docker-run",
             "type": "shell",
-            "command": "docker run --rm buildenv-esp",
+            "command": "docker run --rm -v ${workspaceFolder}/hello-world:/workspace/hello-world -it buildenv-esp /bin/bash",
             "problemMatcher": []
         }
     ]
