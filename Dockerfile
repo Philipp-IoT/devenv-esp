@@ -1,4 +1,4 @@
-FROM node:23.6.0-bookworm-slim
+FROM node:23.11-bookworm-slim
 
 ARG IDF_PATH=/opt/local/esp-idf
 ARG IDF_GIT_TAG=v5.4
@@ -18,6 +18,7 @@ RUN apt install -y \
     python3 \
     python3-pip \
     python3-venv \
+    pipenv \
     cmake \
     ninja-build \
     ccache \
