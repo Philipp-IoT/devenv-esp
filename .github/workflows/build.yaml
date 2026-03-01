@@ -1,0 +1,94 @@
+name: Build and deploy
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+env:
+  EXCLUDE_PREFIX: 'chore(release)'
+
+jobs:
+  get_env:
+    uses: ./.github/workflows/env.yaml
+  build_docker_image:
+    name: Build Docker image and push to local registry
+    runs-on: bolte-runner
+    needs: get_env
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ needs.get_env.outputs.registry_url }}/${{ needs.get_env.outputs.image_name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+  build_test_executable:
+    name: Build test executable
+    needs: [get_env, build_docker_image]
+    runs-on: bolte-runner
+    container:
+      image: ${{ needs.build_docker_image.outputs.tags }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Prepare
+        shell: bash
+        run: |
+          # Source the ESP-IDF export script
+          . $IDF_PATH/export.sh
+
+          # Export key variables to make them available to subsequent steps
+          echo "PATH=$PATH" >> $GITHUB_ENV
+          echo "IDF_PATH=$IDF_PATH" >> $GITHUB_ENV
+          echo "IDF_PYTHON_ENV_PATH=$IDF_PYTHON_ENV_PATH" >> $GITHUB_ENV
+
+          # Verify the environment is set up correctly
+          echo "ESP-IDF version: $(idf.py --version)"
+      - name: Set Target
+        run: |
+          cd hello-world
+          idf.py set-target esp32c6
+      - name: Build
+        run: |
+          cd hello-world
+          idf.py build
+  release:
+    name: Bump
+    runs-on: bolte-runner
+    needs: build_docker_image
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/github
+            @semantic-release/changelog
