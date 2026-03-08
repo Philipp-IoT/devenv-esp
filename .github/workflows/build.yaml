@@ -45,6 +45,7 @@ jobs:
     runs-on: bolte-runner
     container:
       image: ${{ needs.build_docker_image.outputs.tags }}
+      options: --user 1000
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -69,24 +70,18 @@ jobs:
         run: |
           cd hello-world
           idf.py build
-      - name: Cleanup workspace
-        if: always()
-        run: chmod -R a+rwX "$GITHUB_WORKSPACE" || true
   release:
     name: Bump
     runs-on: bolte-runner
     needs: build_docker_image
     container:
-      image: node:22-alpine
+      image: node:22-bookworm-slim
+      options: --user 1000
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
-      - name: Cleanup root-owned files from previous runs
-        run: rm -rf "$GITHUB_WORKSPACE"/* || true
-      - name: Install git
-        run: apk add --no-cache git
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
