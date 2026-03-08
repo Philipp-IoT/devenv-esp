@@ -73,26 +73,29 @@ jobs:
     name: Bump
     runs-on: bolte-runner
     needs: build_docker_image
-    container:
-      image: node:22-bookworm-slim
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
-      - name: Install git
-        run: apt-get update && apt-get install -y git
-      - name: Check out the repo
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Tell Git the workspace is safe
-        run: git config --global --add safe.directory ${{ github.workspace }}
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+      - name: Install dependencies
+        run: npm install --no-save semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          dry_run: ${{ github.event_name == 'pull_request' }}
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/github
-            @semantic-release/changelog
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            npx semantic-release --dry-run
+          else
+            npx semantic-release
+          fi
 
