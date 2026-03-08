@@ -5,6 +5,7 @@ ARG IDF_GIT_TAG=v5.4
 ARG IDF_TARGETS=esp32c6
 
 ENV IDF_PATH=$IDF_PATH
+ENV IDF_TOOLS_PATH=/root/.espressif
 
 RUN apt update
 
@@ -45,3 +46,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh"]
 
 # WORKDIR /usr/local/...
+
