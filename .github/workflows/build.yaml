@@ -69,19 +69,12 @@ jobs:
         run: |
           cd hello-world
           idf.py build
-      - name: Fix permissions
-        if: always()
-        run: chmod -R a+rwX $GITHUB_WORKSPACE $RUNNER_TEMP || true
   release:
     name: Bump
     runs-on: bolte-runner
     needs: build_docker_image
     container:
       image: node:22-bookworm-slim
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -97,6 +90,4 @@ jobs:
             @semantic-release/git
             @semantic-release/github
             @semantic-release/changelog
-      - name: Fix permissions
-        if: always()
-        run: chmod -R a+rwX $GITHUB_WORKSPACE $RUNNER_TEMP || true
+
