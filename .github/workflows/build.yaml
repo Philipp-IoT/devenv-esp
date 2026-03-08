@@ -69,6 +69,9 @@ jobs:
         run: |
           cd hello-world
           idf.py build
+      - name: Cleanup workspace
+        if: always()
+        run: chmod -R a+rwX "$GITHUB_WORKSPACE" || true
   release:
     name: Bump
     runs-on: bolte-runner
@@ -80,6 +83,8 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - name: Cleanup root-owned files from previous runs
+        run: rm -rf "$GITHUB_WORKSPACE"/* || true
       - name: Install git
         run: apk add --no-cache git
       - name: Check out the repo
