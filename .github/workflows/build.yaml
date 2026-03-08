@@ -73,7 +73,6 @@ jobs:
     name: Bump
     runs-on: bolte-runner
     needs: build_docker_image
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     container:
       image: node:22-bookworm-slim
     steps:
@@ -84,36 +83,14 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tell Git the workspace is safe
+        run: git config --global --add safe.directory ${{ github.workspace }}
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/github
-            @semantic-release/changelog
-  release-dry-run:
-    name: Bump (dry run)
-    runs-on: bolte-runner
-    needs: build_docker_image
-    if: github.event_name == 'pull_request'
-    container:
-      image: node:22-bookworm-slim
-    steps:
-      - name: Install git
-        run: apt-get update && apt-get install -y git
-      - name: Check out the repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Semantic Release (dry run)
-        uses: cycjimmy/semantic-release-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          dry_run: true
+          dry_run: ${{ github.event_name == 'pull_request' }}
           extra_plugins: |
             @semantic-release/git
             @semantic-release/github
