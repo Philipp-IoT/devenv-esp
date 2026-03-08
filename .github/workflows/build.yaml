@@ -73,11 +73,15 @@ jobs:
     name: Bump
     runs-on: bolte-runner
     needs: build_docker_image
+    container:
+      image: node:22-alpine
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
+      - name: Install git
+        run: apk add --no-cache git
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
