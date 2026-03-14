@@ -99,9 +99,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            npx semantic-release --dry-run
-          else
-            npx semantic-release
-          fi
+          npx semantic-release
 
