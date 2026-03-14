@@ -46,29 +46,20 @@ jobs:
     container:
       image: ${{ needs.build_docker_image.outputs.tags }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v4
       - name: Prepare
         shell: bash
         run: |
-          # Source the ESP-IDF export script
           . $IDF_PATH/export.sh
-
-          # Export key variables to make them available to subsequent steps
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "IDF_PATH=$IDF_PATH" >> $GITHUB_ENV
           echo "IDF_PYTHON_ENV_PATH=$IDF_PYTHON_ENV_PATH" >> $GITHUB_ENV
-
-          # Verify the environment is set up correctly
           echo "ESP-IDF version: $(idf.py --version)"
+      - name: Copy hello_world example
+        run: cp -r $IDF_PATH/examples/get-started/hello_world /tmp/hello_world
       - name: Set Target
-        run: |
-          cd hello-world
-          idf.py set-target esp32c6
+        run: idf.py -C /tmp/hello_world set-target esp32c6
       - name: Build
-        run: |
-          cd hello-world
-          idf.py build
+        run: idf.py -C /tmp/hello_world build
   release:
     name: Bump
     runs-on: bolte-runner
