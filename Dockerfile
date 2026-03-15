@@ -44,6 +44,3 @@ RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/sh"]
-
-# WORKDIR /usr/local/...
-
