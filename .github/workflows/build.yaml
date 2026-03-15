@@ -39,6 +39,29 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
+  test_version_extraction:
+    name: Test version extraction
+    needs: [get_env, build_docker_image]
+    runs-on: bolte-runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+      - name: Pull built image
+        run: docker pull ${{ needs.get_env.outputs.registry_url }}/${{ needs.get_env.outputs.image_name }}:pr-${{ github.event.pull_request.number }}
+      - name: Test version extraction
+        env:
+          DOCKER_IMAGE: ${{ needs.get_env.outputs.registry_url }}/${{ needs.get_env.outputs.image_name }}:pr-${{ github.event.pull_request.number }}
+        run: |
+          echo "=== Base Image ==="
+          node -e "console.log(require('./semantic-release-plugins/getBaseImageName')())"
+          echo "=== SDK Version ==="
+          node -e "console.log(require('./semantic-release-plugins/getSdkVersion')())"
+          echo "=== Package Versions ==="
+          node -e "console.log(require('./semantic-release-plugins/getPackageVersions')())"
   build_test_executable:
     name: Build test executable
     needs: [get_env, build_docker_image]

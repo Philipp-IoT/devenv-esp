@@ -8,6 +8,6 @@ module.exports = {
       const versions = getPackageVersions();
       const sdkVersion = getSdkVersion();
       // ...existing code...
-      return `**Base Image:** ${baseImage}\n**Alpine Packages:**\n${versions}\n**Pico SDK Version:** ${sdkVersion}`;
+      return `**Base Image:** ${baseImage}\n**Packages:**\n${versions}\n**ESP-IDF Version:** ${sdkVersion}`;
     },
   };
