@@ -1,3 +1,35 @@
+## [1.2.2](https://github.com/Philipp-IoT/devenv-esp/compare/v1.2.1...v1.2.2) (2026-03-15)
+
+
+### Bug Fixes
+
+* Fix version detection ([eebd2ca](https://github.com/Philipp-IoT/devenv-esp/commit/eebd2cadd5e846469d1b055dfdffaf53d040753b))
+
+
+**Base Image:** node:25.8-bookworm-slim
+**Packages:**
+- bison 2:3.8.2+dfsg-1+b1
+- ccache 4.8+really4.7.5-1
+- cmake 3.25.1-1
+- dfu-util 0.11-1
+- flex 2.6.4-8.2
+- git 1:2.39.5-0+deb12u3
+- gperf 3.1-1
+- iputils-ping 3:20221126-1+deb12u1
+- libffi-dev 3.4.4-1
+- libssl-dev 3.0.18-1~deb12u2
+- libusb-1.0-0 2:1.0.26-1
+- ninja-build 1.11.1-2~deb12u1
+- pipenv 2022.12.19+ds-1
+- python3 3.11.2-1+b1
+- python3-pip 23.0.1+dfsg-1
+- python3-venv 3.11.2-1+b1
+- udev 252.39-1~deb12u1
+- usbutils 1:014-1+deb12u1
+- wget 1.21.3-1+deb12u1
+- zsh 5.9-4+b8
+**ESP-IDF Version:** v5.5.3
+
 ## [1.2.1](https://github.com/Philipp-IoT/devenv-esp/compare/v1.2.0...v1.2.1) (2026-03-15)
 
 
