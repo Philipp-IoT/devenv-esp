@@ -37,8 +37,14 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Extract first tag
+        id: first_tag
+        run: |
+          TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
     outputs:
       tags: ${{ steps.meta.outputs.tags }}
+      first_tag: ${{ steps.first_tag.outputs.tag }}
   test_version_extraction:
     name: Test version extraction
     needs: [get_env, build_docker_image]
@@ -51,10 +57,10 @@ jobs:
         with:
           node-version: "lts/*"
       - name: Pull built image
-        run: docker pull ${{ needs.get_env.outputs.registry_url }}/${{ needs.get_env.outputs.image_name }}:pr-${{ github.event.pull_request.number }}
+        run: docker pull ${{ needs.build_docker_image.outputs.first_tag }}
       - name: Test version extraction
         env:
-          DOCKER_IMAGE: ${{ needs.get_env.outputs.registry_url }}/${{ needs.get_env.outputs.image_name }}:pr-${{ github.event.pull_request.number }}
+          DOCKER_IMAGE: ${{ needs.build_docker_image.outputs.first_tag }}
         run: |
           echo "=== Base Image ==="
           node -e "console.log(require('./semantic-release-plugins/getBaseImageName')())"
@@ -101,6 +107,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
+      - name: Pull built image
+        run: docker pull ${{ needs.build_docker_image.outputs.first_tag }}
       - name: Install dependencies
         run: npm install --no-save semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog
       - name: Debug
@@ -112,6 +120,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_IMAGE: ${{ needs.build_docker_image.outputs.first_tag }}
         run: |
           npx semantic-release
 
