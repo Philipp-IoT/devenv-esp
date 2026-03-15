@@ -14,7 +14,7 @@ Preconfigured Docker image for ESP32 firmware development with [ESP-IDF](https:/
 ## What's Included
 
 - **Base image:** `node:23.11-bookworm-slim`
-- **ESP-IDF:** v5.4 (target: `esp32c6`)
+- **ESP-IDF:** v5.4 (targets: `esp32`, `esp32c6`)
 - **Tools:** git, cmake, ninja, ccache, pipenv, zsh, dfu-util
 
 ## Usage

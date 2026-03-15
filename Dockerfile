@@ -1,8 +1,8 @@
-FROM node:23.11-bookworm-slim
+FROM node:25.8-bookworm-slim
 
 ARG IDF_PATH=/opt/local/esp-idf
-ARG IDF_GIT_TAG=v5.4
-ARG IDF_TARGETS=esp32c6
+ARG IDF_GIT_TAG=v5.5.3
+ARG IDF_TARGETS=esp32,esp32c6
 
 ENV IDF_PATH=$IDF_PATH
 ENV IDF_TOOLS_PATH=/root/.espressif
