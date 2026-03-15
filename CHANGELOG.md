@@ -1,3 +1,16 @@
+# [1.2.0](https://github.com/Philipp-IoT/devenv-esp/compare/v1.1.0...v1.2.0) (2026-03-15)
+
+
+### Features
+
+* Update to node 25.8 and esp-idf 5.5.3 ([f69c7cd](https://github.com/Philipp-IoT/devenv-esp/commit/f69c7cdf761eda65e18a18240d6eff09302e8729))
+
+
+**Base Image:** node:25.8-bookworm-slim
+**Alpine Packages:**
+
+**Pico SDK Version:** unknown
+
 # [1.1.0](https://gitea.com/pbolte/buildenv-esp/compare/v1.0.1...v1.1.0) (2025-05-01)
 
 
