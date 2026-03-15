@@ -7,13 +7,38 @@
             "label": "docker-build",
             "type": "shell",
             "command": "docker build -t buildenv-esp .",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         },
         {
             "label": "docker-run",
             "type": "shell",
-            "command": "docker run --rm -v ${workspaceFolder}/hello-world:/workspace/hello-world -it buildenv-esp /bin/bash",
+            "command": "docker run --rm -it buildenv-esp /bin/bash",
             "problemMatcher": []
+        },
+        {
+            "label": "docker-build-hello-world",
+            "type": "shell",
+            "command": "docker run --rm buildenv-esp sh -c 'cp -r $IDF_PATH/examples/get-started/hello_world /tmp/hello_world && idf.py -C /tmp/hello_world set-target ${input:espTarget} && idf.py -C /tmp/hello_world build'",
+            "group": {
+                "kind": "build"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "espTarget",
+            "type": "pickString",
+            "description": "Select ESP32 target",
+            "options": [
+                "esp32",
+                "esp32c6"
+            ],
+            "default": "esp32c6"
         }
     ]
 }

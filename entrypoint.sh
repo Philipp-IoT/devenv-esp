@@ -1,3 +1,4 @@
 #!/bin/sh
-. $IDF_PATH/export.sh
+cd $IDF_PATH/
+. ./export.sh
 exec "$@"
